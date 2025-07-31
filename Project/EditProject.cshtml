@@ -1,0 +1,263 @@
+﻿@page
+@model Lab2.Pages.Project.EditProjectModel
+@{
+	ViewData["Title"] = "Edit Project";
+}
+<style>
+	.table-responsive {
+		overflow-x: auto;
+	}
+
+	table thead th {
+		background-color: #450084;
+		color: white;
+		border: none;
+		padding: 0.75rem 1rem;
+		text-transform: uppercase;
+		letter-spacing: 0.5px;
+		font-size: 0.95rem;
+	}
+
+	table td {
+		padding: 0.75rem 1rem;
+		vertical-align: middle;
+		border-top: 1px solid #ddd;
+	}
+
+	table tbody tr:hover {
+		background-color: #f2e6ff;
+	}
+
+	.btn-outline-primary {
+		color: #450084;
+		border: 1.5px solid #450084;
+		border-radius: 0.5rem;
+		transition: all 0.2s ease-in-out;
+		font-weight: 500;
+	}
+
+		.btn-outline-primary:hover {
+			background-color: #450084;
+			color: white;
+			border-color: #450084;
+		}
+
+	.btn-outline-success {
+		color: #450084;
+		border-color: #450084;
+	}
+
+		.btn-outline-success:hover {
+			background-color: #450084;
+			color: white;
+			border-color: #450084;
+		}
+
+	.btn-outline-dark:hover {
+		background-color: #450084;
+		color: white;
+		border-color: #450084;
+	}
+
+	.btn-outline-dark {
+		color: #450084;
+		border-color: #450084;
+	}
+
+		.btn-outline-dark:hover {
+			background-color: #450084;
+			color: white;
+			border-color: #450084;
+		}
+
+	.form-label {
+		font-weight: 600;
+		color: #450084;
+	}
+
+	.form-control, .form-select {
+		border-radius: 0.5rem;
+	}
+
+	/*Used chat to help me mimic the look of disabled but the functionality of readonly so the data still gets sent to the DB*/
+	.readonly-styled {
+		background-color: #e9ecef; /* Same grey as disabled */
+		color: #6c757d; /* Muted text */
+		pointer-events: none; /* Prevents cursor or text selection */
+		border-color: #ced4da; /* Match the normal border */
+	}
+</style>
+
+<h2 class="mb-4 text-center">Edit Project</h2>
+<div class="card p-4 shadow-sm border rounded" style="max-width: 700px; margin: 0 auto;">
+		<form asp-page="EditProject" method="post">
+
+		@{
+			string role = HttpContext.Session.GetString("Role");
+			int permID = Model.PermID;
+
+			bool canEditRestrictedFields = role == "Admin Staff" || role == "Center Director" || permID == 4;
+		}
+
+		<input type="hidden" asp-for="@Model.ProjectToUpdate.Project_ID" />
+
+		<div class="mb-3">
+			<label asp-for="@Model.ProjectToUpdate.Title" class="form-label mt-4">Title</label>
+			<input type="text" asp-for="@Model.ProjectToUpdate.Title" class="form-control" />
+		</div>
+		
+		<div class="mb-3">
+			<label asp-for="@Model.ProjectToUpdate.StartDate" class="form-label mt-4">Start Date</label>
+			<input type="date" asp-for="@Model.ProjectToUpdate.StartDate" class="form-control"/>
+		</div>
+
+		<div class="mb-3">
+			<label asp-for="@Model.ProjectToUpdate.EndDate" class="form-label mt-4">End Date</label>
+			<input type="date" asp-for="@Model.ProjectToUpdate.EndDate" class="form-control" />
+		</div>
+
+		<div class="mb-3">
+			<label asp-for="@Model.ProjectToUpdate.Due_Date" class="form-label mt-4">Due Date</label>
+			<input type="date" asp-for="@Model.ProjectToUpdate.Due_Date" class="form-control" />
+		</div>
+
+@if (canEditRestrictedFields)
+    {
+		<div class="mb-3">
+			<label asp-for="@Model.ProjectToUpdate.Budget" class="form-label mt-4">Budget</label>
+			<input type="number" asp-for="@Model.ProjectToUpdate.Budget" class="form-control" />
+		</div>
+
+		<div class="mb-3">
+			<label asp-for="@Model.ProjectToUpdate.FundingSource" class="form-label mt-4">Funding Source</label>
+			<input type="text" asp-for="@Model.ProjectToUpdate.FundingSource" class="form-control" />
+		</div>
+
+		<div class="mb-3">
+			<label asp-for="ProjectToUpdate.LeadUser" class="form-label mt-4">Lead User</label>
+			<select asp-for="ProjectToUpdate.LeadUser" class="form-select">
+				<option value="">Select Lead User</option>
+				@foreach (var user in Model.UserList)
+				{
+					if (user.User_ID == Model.ProjectToUpdate.LeadUser)
+					{
+						<option value="@user.User_ID" selected>@($"{user.FirstName} {user.LastName}")</option>
+					}
+					else
+					{
+						<option value="@user.User_ID">@($"{user.FirstName} {user.LastName}")</option>
+					}
+				}
+			</select>
+		</div>
+
+		<div class="mb-3">
+			<label asp-for="@Model.ProjectToUpdate.Description" class="form-label mt-4">Description</label>
+			<textarea asp-for="@Model.ProjectToUpdate.Description" class="form-control"></textarea>
+		</div>
+
+		<div class="mb-3">
+			<label asp-for="@Model.ProjectToUpdate.Department" class="form-label mt-4">Department</label>
+			<input type="text" asp-for="@Model.ProjectToUpdate.Department" class="form-control" />
+		</div>
+
+		<div class="mb-3">
+			<label for="Status" class="form-label mt-2">Project Status</label>
+			<select asp-for="@Model.ProjectToUpdate.Status" class="form-select">
+				<option value="">Select Status</option>
+				<option selected="@("Active" == Model.ProjectToUpdate.Status)">Active</option>
+				<option selected="@("Archive" == Model.ProjectToUpdate.Status)">Archive</option>
+			</select>
+		</div>
+		
+		<div class="mb-3">
+            <label asp-for="ProjectToUpdate.Grant_ID" class="form-label mt-4">Related Grant</label>
+            <select asp-for="ProjectToUpdate.Grant_ID" class="form-select">
+                <option value="">Select Related Grant</option>
+				@foreach (var grant in Model.GrantList)
+				{
+					if (grant.Grant_ID == Model.ProjectToUpdate.Grant_ID)
+					{
+						<option value="@grant.Grant_ID" selected>@grant.Title</option>
+					}
+					else
+					{
+						<option value="@grant.Grant_ID">@grant.Title</option>
+					}
+				}
+            </select>
+			</div>
+		}
+		else
+		{
+			<div class="mb-3">
+				<label asp-for="@Model.ProjectToUpdate.Budget" class="form-label mt-4" hidden>Budget</label>
+				<input type="number" asp-for="@Model.ProjectToUpdate.Budget" class="form-control" hidden />
+			</div>
+
+			<div class="mb-3">
+				<label asp-for="@Model.ProjectToUpdate.FundingSource" class="form-label mt-4" hidden>Funding Source</label>
+				<input type="text" asp-for="@Model.ProjectToUpdate.FundingSource" class="form-control" hidden />
+			</div>
+
+			<div class="mb-3">
+				<label asp-for="ProjectToUpdate.LeadUser" class="form-label mt-4" hidden>Lead User</label>
+				<select asp-for="ProjectToUpdate.LeadUser" class="form-select" hidden>
+					<option value="">Select Lead User</option>
+					@foreach (var user in Model.UserList)
+					{
+						if (user.User_ID == Model.ProjectToUpdate.LeadUser)
+						{
+							<option value="@user.User_ID" selected>@($"{user.FirstName} {user.LastName}")</option>
+						}
+						else
+						{
+							<option value="@user.User_ID">@($"{user.FirstName} {user.LastName}")</option>
+						}
+					}
+				</select>
+			</div>
+
+			<div class="mb-3">
+				<label asp-for="@Model.ProjectToUpdate.Description" class="form-label mt-4">Description</label>
+				<textarea asp-for="@Model.ProjectToUpdate.Description" class="form-control readonly-styled" readonly></textarea>
+			</div>
+
+			<div class="mb-3">
+				<label asp-for="@Model.ProjectToUpdate.Department" class="form-label mt-4">Department</label>
+				<input type="text" asp-for="@Model.ProjectToUpdate.Department" class="form-control readonly-styled" readonly />
+			</div>
+
+			<div class="mb-3">
+				<label for="Status" class="form-label mt-2" >Project Status</label>
+				<select asp-for="@Model.ProjectToUpdate.Status" class="form-select readonly-styled" readonly>
+					<option value="">Select Status</option>
+					<option selected="@("Active" == Model.ProjectToUpdate.Status)">Active</option>
+					<option selected="@("Archive" == Model.ProjectToUpdate.Status)">Archive</option>
+				</select>
+			</div>
+
+			<div class="mb-3">
+				<label asp-for="ProjectToUpdate.Grant_ID" class="form-label mt-4">Related Grant</label>
+				<select asp-for="ProjectToUpdate.Grant_ID" class="form-select readonly-styled" readonly>
+					<option value="">Select Related Grant</option>
+					@foreach (var grant in Model.GrantList)
+					{
+						if (grant.Grant_ID == Model.ProjectToUpdate.Grant_ID)
+						{
+							<option value="@grant.Grant_ID" selected>@grant.Title</option>
+						}
+						else
+						{
+							<option value="@grant.Grant_ID">@grant.Title</option>
+						}
+					}
+				</select>
+			</div>	
+	}
+		<div class="d-flex gap-2">
+			<button type="submit" class="btn btn-outline-primary">Save Changes</button>
+			<a asp-page="/Project/Index" class="btn btn-outline-dark">Cancel</a>
+		</div>
+	</form>
+</div>

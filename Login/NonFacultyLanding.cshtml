@@ -1,0 +1,16 @@
+﻿@page
+@model Lab2.Pages.Login.NonFacultyLandingcshtmlModel
+@{
+}
+@{
+    ViewData["Title"] = "Non-Faculty Landing";
+}
+
+<h2>non-Faculty Portal</h2>
+
+@if (ViewData["LoginMessage"] != null)
+{
+    <p class="text-success">@ViewData["LoginMessage"]</p>
+}
+
+<a asp-page="ParameterizedLogin" asp-route-logout="true" class="btn btn-danger">Logout</a>

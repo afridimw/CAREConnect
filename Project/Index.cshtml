@@ -1,0 +1,162 @@
+﻿@page
+@model Lab2.Pages.Project.IndexModel
+@{
+	ViewData["Title"] = "Project Listing";
+}
+
+<style>
+	.table-responsive {
+	overflow-x: auto;
+	}
+
+	table thead th {
+	background-color: #450084;
+	color: white;
+	border: none;
+	padding: 0.75rem 1rem;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	font-size: 0.95rem;
+	}
+
+	td{
+		padding: 0.75rem 1rem !important;
+	}
+
+	table td {
+	padding: 0.75rem 1rem;
+	vertical-align: middle;
+	border-top: 1px solid #ddd;
+	}
+
+	table tbody tr:hover{
+	background-color: #f2e6ff;
+	}
+
+	.btn-outline-primary {
+	color: #450084;
+	border: 1.5px solid #450084;
+	border-radius: 0.5rem;
+	transition: all 0.2s ease-in-out;
+	font-weight: 500;
+	}
+
+	.btn-outline-primary:hover {
+	background-color: #450084;
+	color: white;
+	border-color: #450084;
+	}
+
+	.btn-outline-success {
+	color: #450084;
+	border-color: #450084;
+	}
+
+	.btn-outline-success:hover {
+	background-color: #450084;
+	color: white;
+	border-color: #450084;
+	}
+
+	.btn-outline-dark:hover {
+	background-color: #450084;
+	color: white;
+	border-color: #450084;
+	}
+
+	.btn-outline-dark {
+	color: #450084;
+	border-color: #450084;
+	}
+
+	.btn-outline-dark:hover {
+	background-color: #450084;
+	color: white;
+	border-color: #450084;
+	}
+</style>
+
+
+
+<h2 class="text-center mt-4">Project View</h2>
+<hr class="w-25 mx-auto" />
+
+<table class="table table-bordered table-responsive table-hover table-striped">
+	<thead>
+		<tr>
+			<th>Project Title:</th>
+		</tr>
+	</thead>
+
+	<div class="card p-4 shadow-sm mb-4" style="max-width: 700px; margin: 0 auto;">
+		<form method="get" class="d-flex flex-wrap justify-content-center align-items-center gap-2 mb-4">
+			<div class="form-group">
+				<label>Status</label>
+				<select name="Status" class="form-select form-select-sm" aria-label="Status filter">
+					<option value="">All</option>
+					<option value="Active">Active</option>
+					<option value="Archived">Archived</option>
+				</select>
+				<label>Faculty</label>
+				<select name="faculty" class="form-select form-select-sm" aria-label="Filter by faculty">
+					<option value="">All</option>
+					@foreach (var faculty in Model.FacultyList)
+					{
+						<option value="@faculty.UserId">@faculty.FullName</option>
+					}
+				</select>
+				<label>Date</label>
+				<input type="date" name="date" class="form-control form-control-sm" aria-label="Filter by date" />
+			</div>
+
+			<button type="submit" class="btn btn-outline-primary btn-sm px-4" role="button">Apply Filters</button>
+
+		</form>
+	</div>
+	<tbody>
+		@{
+			var permissions = Model.ProjectPermissions;
+			string role = HttpContext.Session.GetString("Role");
+				}
+
+		@foreach (var project in Model.Projects) 
+		{
+			<tr>
+				<td>@project.Title</td>
+				<td class="text-center">
+					<a asp-page="ProjectDetails" asp-route-projectid="@project.Project_ID"
+					   class="btn btn-outline-primary">Details</a>
+				</td>
+				<td class="text-center">
+					<a asp-page="ProjectTasks" asp-route-projectid="@project.Project_ID"
+					   class="btn btn-outline-primary">Tasks</a>
+					@if (
+						role == "Center Director" || 
+						role == "Admin Staff" || 
+						permissions.Any(p => p.Project_ID == project.Project_ID && (p.Perm_ID == 2 || p.Perm_ID == 4))
+					
+					)	
+		
+				{
+
+						<a asp-page="EditProject" asp-route-projectid="@project.Project_ID"
+						   class="btn btn-outline-primary">Edit</a>
+					}
+				</td>
+			</tr>
+		}
+
+	</tbody>
+</table>
+
+@if (!Model.Projects.Any()){
+	<div class="alert alert-danger text-center mt-3" role="alert">No Projects Found</div>
+}
+
+<div class="d-flex justify-content-between align-items-center mt-4">
+	@if (HttpContext.Session.GetString("Role") == "Center Director" | HttpContext.Session.GetString("Role") == "Admin Staff")
+	{
+		<a asp-page="AddProject" class="btn btn-outline-success">Add New Project</a>
+	}
+<a asp-page="ProjectDashboard" class="btn btn-outline-dark">My Projects</a>
+</div>

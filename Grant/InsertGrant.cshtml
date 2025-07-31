@@ -1,0 +1,147 @@
+﻿@page
+@model Lab2.Pages.Grant.InsertGrantModel
+@{
+	ViewData["Title"] = "Insert New Grant";
+}
+
+<style>
+	.table-responsive {
+		overflow-x: auto;
+	}
+
+	table thead th {
+		background-color: #450084;
+		color: white;
+		border: none;
+		padding: 0.75rem 1rem;
+		text-transform: uppercase;
+		letter-spacing: 0.5px;
+		font-size: 0.95rem;
+	}
+
+	table td {
+		padding: 0.75rem 1rem;
+		vertical-align: middle;
+		border-top: 1px solid #ddd;
+	}
+
+	table tbody tr:hover {
+		background-color: #f2e6ff;
+	}
+
+	.btn-outline-primary {
+		color: #450084;
+		border: 1.5px solid #450084;
+		border-radius: 0.5rem;
+		transition: all 0.2s ease-in-out;
+		font-weight: 500;
+	}
+
+		.btn-outline-primary:hover {
+			background-color: #450084;
+			color: white;
+			border-color: #450084;
+		}
+
+	.btn-outline-success {
+		color: #450084;
+		border-color: #450084;
+	}
+
+		.btn-outline-success:hover {
+			background-color: #450084;
+			color: white;
+			border-color: #450084;
+		}
+
+	.btn-outline-dark:hover {
+		background-color: #450084;
+		color: white;
+		border-color: #450084;
+	}
+
+	.btn-outline-dark {
+		color: #450084;
+		border-color: #450084;
+	}
+
+		.btn-outline-dark:hover {
+			background-color: #450084;
+			color: white;
+			border-color: #450084;
+		}
+</style>
+
+<h2 class="mb-4 text-center">Insert New Grant</h2>
+<div class="card p-4 shadow-sm border rounded" style="max-width: 600px; margin:0 auto;">
+	<form asp-page="InsertGrant" method="post">
+		<div class="mb-3">
+			<label class="form-label mt-2">Grant Title</label>
+			<input type="text" asp-for="NewGrant.Title" class="form-control" />
+		</div>
+
+		<div class="mb-3">
+			<label class="form-label mt-2">Category</label>
+			<input type="text" asp-for="NewGrant.Category" class="form-control" />
+		</div>
+
+		<div class="mb-3">
+			<label class="form-label mt-2">Type</label>
+			<input type="text" asp-for="NewGrant.Type" class="form-control" />
+		</div>
+
+		<div class="mb-3">
+			<label class="form-label mt-2">Submission Date</label>
+			<input type="datetime-local" asp-for="NewGrant.Submission_Date" class="form-control" />
+		</div>
+
+		<div class="mb-3">
+			<label class="form-label mt-2">Award Date</label>
+			<input type="datetime-local" asp-for="NewGrant.Award_Date" class="form-control" />
+		</div>
+
+		<div class="mb-3">
+			<label class="form-label mt-2">Deadline</label>
+			<input type="datetime-local" asp-for="NewGrant.Deadline" class="form-control" />
+		</div>
+
+		<div class="mb-3">
+			<label class="form-label mt-2">Amount Requested (USD)</label>
+			<input type="number" asp-for="NewGrant.AmountRequested" class="form-control" />
+		</div>
+
+		<div class="mb-3">
+			<label class="form-label mt-2">Amount Awarded</label>
+			<input type="number" asp-for="NewGrant.AmountAwarded" class="form-control" />
+		</div>
+
+		<div class="mb-3">
+			<label class="form-label mt-2">Status</label>
+			<input type="text" asp-for="NewGrant.Status" class="form-control" />
+		</div>
+
+		<div class="mb-3">
+			<label class="form-label mt-2">Sponsor Organization</label>
+			<select asp-for="NewGrant.SponsorOrg_ID" asp-items="@(new SelectList(Model.SponsorOrgList, "SponsorOrg_ID", "OrgName"))" class="form-select">
+				<option value="">Select Sponsor Organization</option>
+			</select>
+		</div>
+
+		<div class="mb-3">
+			<label class="form-label mt-2">Pursue</label>
+			<select asp-for="NewGrant.Pursue" class="form-select">
+				<option value="">Select Pursue Status</option>
+				<option value="YES">YES</option>
+				<option value="NO">NO</option>
+			</select>
+		</div>
+
+		<button type="submit" class="btn btn-outline-primary">Submit</button>
+		<a asp-page="/Grant/Index" class="btn btn-outline-dark">Cancel</a>
+	</form>
+</div>
+		
+<form method="post" asp-page-handler="PopulateHandler" class="mt-3 text-center">
+	<button type="submit" class="btn btn-outline-secondary">Populate Demo Values</button>
+</form>
+</div>

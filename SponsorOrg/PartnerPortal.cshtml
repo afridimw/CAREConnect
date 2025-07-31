@@ -1,0 +1,75 @@
+﻿@page
+@model Lab2.Pages.Partner.PartnerPortalModel
+@{
+    ViewData["Title"] = "Partner Portal";
+}
+
+<div class="card p-4 shadow-sm border rounded">
+    <h3 class="mb-4">Welcome to Your Portal</h3>
+
+    <table class="table table-bordered">
+        <tr>
+            <td><strong>Organization Name</strong></td>
+            <td>@Model.OrgName</td>
+        </tr>
+        <tr>
+            <td><strong>Status</strong></td>
+            <td>@Model.Status</td>
+        </tr>
+    </table>
+
+    <hr />
+
+    <h5>Submit an Update</h5>
+    <form method="post" enctype="multipart/form-data">
+        <div class="mb-3">
+            <label class="form-label">Upload File</label>
+            <input type="file" class="form-control" asp-for="PartnerUpload" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">File Type</label>
+            <input type="text" class="form-control" asp-for="FileType" placeholder="e.g. Meeting Notes, Proposal..." />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Comment</label>
+            <textarea class="form-control" rows="4" asp-for="PartnerNote"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-outline-primary">Submit</button>
+    </form>
+
+    <hr />
+    <h5>Your Uploaded Files</h5>
+
+    @if (Model.UploadedFiles.Count == 0)
+    {
+        <p>You haven't uploaded any files yet.</p>
+    }
+    else
+    {
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>File Name</th>
+                    <th>Upload Date</th>
+                    <th>Note</th>
+                    <th>File Type</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var file in Model.UploadedFiles)
+                {
+                    <tr>
+                        <td>
+                            <a href="/fileupload/@file.FileName" target="_blank">@file.FileName</a>
+                        </td>
+                        <td>@file.UploadDate.ToShortDateString()</td>
+                        <td>@file.Note</td>
+                        <td>@file.FileType</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>

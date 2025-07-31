@@ -1,0 +1,242 @@
+﻿@page
+@model Lab2.Pages.Admin.AdminSearchModel
+@{
+	ViewData["Title"] = "Admin Search";
+}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+	.table-responsive {
+		overflow-x: auto;
+	}
+
+	table thead th {
+		background-color: #450084;
+		color: white;
+		border: none;
+		padding: 0.75rem 1rem;
+		text-transform: uppercase;
+		letter-spacing: 0.5px;
+		font-size: 0.95rem;
+	}
+
+	table td {
+		padding: 0.75rem 1rem;
+		vertical-align: middle;
+		border-top: 1px solid #ddd;
+	}
+
+	table tbody tr:hover {
+		background-color: #f2e6ff;
+	}
+
+	.btn-outline-primary {
+		color: #450084;
+		border: 1.5px solid #450084;
+		border-radius: 0.5rem;
+		transition: all 0.2s ease-in-out;
+		font-weight: 500;
+	}
+
+		.btn-outline-primary:hover {
+			background-color: #450084;
+			color: white;
+			border-color: #450084;
+		}
+
+	.btn-outline-success {
+		color: #450084;
+		border-color: #450084;
+	}
+
+		.btn-outline-success:hover {
+			background-color: #450084;
+			color: white;
+			border-color: #450084;
+		}
+
+	.btn-outline-dark {
+		color: #450084;
+		border-color: #450084;
+	}
+
+		.btn-outline-dark:hover {
+			background-color: #450084;
+			color: white;
+			border-color: #450084;
+		}
+
+	/* Keep print layout minimal - only results */
+	@@media print {
+		body * {
+			visibility: hidden;
+		}
+
+		#print-area, #print-area * {
+			visibility: visible;
+		}
+
+		#print-area {
+			position: absolute;
+			left: 0;
+			top: 0;
+			width: 100%;
+		}
+	}
+</style>
+
+
+
+<h2>Generate A Report</h2>
+
+<form method="post">
+	<table class="table table-bordered">
+		<tr>
+			<td>Start Date</td>
+			<td><input asp-for="StartDate" type="date" class="form-control" /></td>
+		</tr>
+		<tr>
+			<td>End Date</td>
+			<td><input asp-for="EndDate" type="date" class="form-control" /></td>
+		</tr>
+		<tr>
+			<td>Project Status</td>
+			<td>
+				<select asp-for="ProjectStatus" class="form-control">
+					<option value="">-- Select --</option>
+					<option value="Active">Active</option>
+					<option value="Inactive">Inactive</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>Grant Status</td>
+			<td>
+				<select asp-for="GrantStatus" class="form-control">
+					<option value="">-- Select --</option>
+					<option value="Awarded">Awarded</option>
+					<option value="Pending">Pending</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>Faculty Name</td>
+			<td><input asp-for="FacultyName" class="form-control" /></td>
+		</tr>
+		<tr>
+			<td>External Partner</td>
+			<td><input asp-for="ExternalPartnerName" class="form-control" /></td>
+		</tr>
+		<tr>
+			<td>Funding Source</td>
+			<td><input asp-for="FundingSource" class="form-control" /></td>
+		</tr>
+		<tr>
+			<td></td>
+			<td><input type="submit" value="Search" class="btn btn-outline-primary" /></td>
+		</tr>
+	</table>
+</form>
+
+@if (Model.Results.Count > 0)
+
+{
+	<h4>Grant Status Breakdown</h4>
+	<div style="max-width: 300px; margin: 0 auto;">
+		<canvas id="grantStatusPie"></canvas>
+	</div>
+	<div id="print-area">
+		<h2> Results</h2>
+		<!-- Used chatgpt to help separate project and grant results -->
+		@foreach (var item in Model.Results)
+		{
+			<table class="table table-bordered table-hover">
+				@if (item.ProjectID != 0 && item.ProjectTitle != "N/A")
+				{
+					<tr><td>Project Title</td><td>@item.ProjectTitle</td></tr>
+					<tr><td>Due Date</td><td>@(item.DueDate == DateTime.MinValue ? "N/A" : item.DueDate.ToShortDateString())</td></tr>
+					<tr><td>Project Status</td><td>@item.ProjectStatus</td></tr>
+					<tr><td>Funding Source</td><td>@item.FundingSource</td></tr>
+
+				}
+
+				@if (item.GrantID != 0 && item.GrantTitle != "N/A")
+				{
+					<tr><td>Grant Title</td><td>@item.GrantTitle</td></tr>
+					<tr><td>Submission Date</td><td>@(item.SubmissionDate == DateTime.MinValue ? "N/A" : item.SubmissionDate.ToShortDateString())</td></tr>
+					<tr><td>Award Date</td><td>@(item.AwardDate == DateTime.MinValue ? "N/A" : item.AwardDate.ToShortDateString())</td></tr>
+					<tr><td>Grant Status</td><td>@item.GrantStatus</td></tr>
+					<tr><td>Amount Awarded</td><td>@item.Amount.ToString("C")</td></tr>
+				}
+
+				<tr><td>Faculty</td><td>@item.FacultyName (@item.FacultyEmail)</td></tr>
+				<tr><td>External Partner</td><td>@item.ExternalPartnerOrgName</td></tr>
+			</table>
+		}
+	</div>
+
+	<!-- Pass values automatically using hidden https://www.w3schools.com/tags/att_input_type_hidden.asp -->
+
+	<form method="post" asp-page-handler="ExportCsv">
+		<input type="hidden" name="StartDate" value="@Model.StartDate?.ToString("yyyy-MM-dd")" />
+		<input type="hidden" name="EndDate" value="@Model.EndDate?.ToString("yyyy-MM-dd")" />
+		<input type="hidden" name="ProjectStatus" value="@Model.ProjectStatus" />
+		<input type="hidden" name="GrantStatus" value="@Model.GrantStatus" />
+		<input type="hidden" name="FacultyName" value="@Model.FacultyName" />
+		<input type="hidden" name="ExternalPartnerName" value="@Model.ExternalPartnerName" />
+		<hr />
+
+
+		<button type="submit" class="btn btn-outline-secondary">Export Results as CSV</button>
+	</form>
+	<button onclick="window.print()" class="btn btn-outline-dark">Print to PDF</button>
+	//Chatgpt helped with incorporating CHART.JS and cleaning the block
+	@section Scripts {
+	<script>
+		const grantStatusCounts = {
+			Awarded: @Model.Results.Count(r => r.GrantStatus == "Awarded"),
+			Pending: @Model.Results.Count(r => r.GrantStatus == "Pending"),
+			Rejected: @Model.Results.Count(r => r.GrantStatus == "Rejected"),
+			Completed: @Model.Results.Count(r => r.GrantStatus == "Completed")
+		};
+
+		const ctx = document.getElementById('grantStatusPie').getContext('2d');
+		const pieChart = new Chart(ctx, {
+			type: 'pie',
+			data: {
+				labels: Object.keys(grantStatusCounts),
+				datasets: [{
+					label: 'Grant Status',
+					data: Object.values(grantStatusCounts),
+					backgroundColor: [
+						'#450084',    // Awarded
+						'#9370DB',    // Pending (medium purple)
+						'#D1B2FF',    // Rejected (light purple)
+						'#A267AC'     // Completed (soft lavender)
+					],
+					borderColor: 'white',
+					borderWidth: 1
+				}]
+			},
+			options: {
+				responsive: true,
+				plugins: {
+					title: {
+						display: true,
+						text: 'Grant Status Distribution'
+					},
+					legend: {
+						position: 'bottom'
+					}
+				}
+			}
+		});
+	</script>
+	}
+
+
+}
+else
+{
+	<p>No results found.</p>
+}

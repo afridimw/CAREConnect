@@ -1,0 +1,89 @@
+﻿@page 
+@model Lab2.Pages.User.ViewAssignmentsModel
+@{
+    ViewData["Title"] = "View Assignments";
+}
+<style>
+    /* Your existing styles untouched */
+</style>
+
+<h2 class="mb-4 text-center">View Assignments</h2>
+<h5 class="text-muted text-center">For: @Model.UserFullName</h5>
+<div class="mb-3">
+    <a asp-page="/User/UserDashboard" class="btn btn-outline-dark">← Back to Users</a>
+</div>
+<div class="table-responsive">
+    <h3>Projects</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Current Permission</th>
+                <th>Edit Permissions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var project in Model.UserProjects)
+            {
+                <tr>
+                    <td>@project.Title</td>
+                    <td>@project.Permission</td>
+                    <td>
+                        <form method="post" asp-page-handler="Project">
+                            <select name="permId" class="form-select" required>
+                                <option value="1" selected="@(project.permId == 1)">Default</option>
+                                <option value="2" selected="@(project.permId == 2)">Edit</option>
+                                @*<option value="3" selected="@(project.permId == 3)">View Only</option>*@
+                                <option value="4" selected="@(project.permId == 4)">Admin Edit</option>
+                            </select>
+                            <input type="hidden" name="userId" value="@Model.User_ID" />
+                            <input type="hidden" name="projectId" value="@project.Project_ID" />
+                            <button type="submit" class="btn btn-outline-primary mt-2">Confirm</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="table-responsive mt-4">
+    <h3>Grants</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Current Permission</th>
+                <th>Edit Permissions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var grant in Model.UserGrants)
+            {
+                <tr>
+                    <td>@grant.Title</td>
+                    <td>@grant.Permission</td>
+                    <td>
+                        <form method="post" asp-page-handler="Grant">
+                            <select name="permId" class="form-select" required>
+                                <option value="1" selected="@(grant.permId == 1)">Default</option>
+                                <option value="2" selected="@(grant.permId == 2)">Edit</option>
+                               @*<option value="3" selected="@(grant.permId == 3)">View Only</option>*@
+                                <option value="4" selected="@(grant.permId == 4)">Admin Edit</option>
+                            </select>
+
+                            <input type="hidden" name="userId" value="@Model.User_ID" />
+                            <input type="hidden" name="grantId" value="@grant.Grant_ID" />
+                            <button type="submit" class="btn btn-outline-primary mt-2">Confirm</button>
+                        </form>
+
+                    </td>
+
+                </tr>
+
+              
+            }
+           
+        </tbody>
+    </table>
+</div>

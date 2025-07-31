@@ -1,0 +1,22 @@
+﻿@page
+@model Lab2.Pages.Grant.AddGrantNoteModel
+@{
+	ViewData["Title"] = "Add Grant Note";
+}
+
+<h2>New Note</h2>
+<form asp-page="AddGrantNote">
+	<input type="hidden" asp-for="GrantNote.GrantNote_ID" />
+	<input type="hidden" asp-for="GrantNote.Grant_ID" />
+
+	<label for="Timestamp">Note Timestamp: </label>
+	<input type="datetime-local" asp-for="GrantNote.Timestamp" class="form-control" placeholder="Note Timestamp" />
+	<br />
+	<label for="Content">Note Content: </label>
+	<input type="text" asp-for="GrantNote.Content" placeholder="Enter Note Content" class="form-control" />
+	<br />
+	<br />
+	<button type="submit" class="btn btn-success">Add Grant Note</button>
+	<br />
+	<a asp-page="/Grant/GrantDetails">Cancel</a>
+</form>"

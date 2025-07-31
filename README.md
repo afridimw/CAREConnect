@@ -1,2 +1,1 @@
-# CAREConnect
-CAREConnect - a capstone group project
+# Lab2

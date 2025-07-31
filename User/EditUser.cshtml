@@ -1,0 +1,125 @@
+﻿@page "{email}"
+@model Lab2.Pages.User.EditUserModel
+@{
+    ViewData["Title"] = "Edit User";
+}
+<style>
+    .table-responsive {
+        overflow-x: auto;
+    }
+
+    table thead th {
+        background-color: #450084;
+        color: white;
+        border: none;
+        padding: 0.75rem 1rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-size: 0.95rem;
+    }
+
+    table td {
+        padding: 0.75rem 1rem;
+        vertical-align: middle;
+        border-top: 1px solid #ddd;
+    }
+
+    table tbody tr:hover {
+        background-color: #f2e6ff;
+    }
+
+    .btn-outline-primary {
+        color: #450084;
+        border: 1.5px solid #450084;
+        border-radius: 0.5rem;
+        transition: all 0.2s ease-in-out;
+        font-weight: 500;
+    }
+
+        .btn-outline-primary:hover {
+            background-color: #450084;
+            color: white;
+            border-color: #450084;
+        }
+
+    .btn-outline-success {
+        color: #450084;
+        border-color: #450084;
+    }
+
+        .btn-outline-success:hover {
+            background-color: #450084;
+            color: white;
+            border-color: #450084;
+        }
+
+    .btn-outline-dark:hover {
+        background-color: #450084;
+        color: white;
+        border-color: #450084;
+    }
+
+    .btn-outline-dark {
+        color: #450084;
+        border-color: #450084;
+    }
+
+        .btn-outline-dark:hover {
+            background-color: #450084;
+            color: white;
+            border-color: #450084;
+        }
+
+    .form-label {
+        font-weight: 600;
+        color: #450084;
+    }
+
+    .form-control, .form-select {
+        border-radius: 0.5rem;
+    }
+</style>
+
+<h2 class="mb-4 text-center">Edit User</h2>
+<div class="card p-4 shadow-sm border rounded" style="max-width: 700px; margin: 0 auto;">
+    <form asp-page="EditUser" method="post">
+        <input type="hidden" asp-for="@Model.UserToUpdate.Email" />
+
+        <div class="mb-3">
+            <label asp-for="@Model.UserToUpdate.FirstName" class="form-label mt-4">First Name</label>
+            <input type="text" asp-for="@Model.UserToUpdate.FirstName" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="@Model.UserToUpdate.LastName" class="form-label mt-4">Last Name</label>
+            <input type="text" asp-for="@Model.UserToUpdate.LastName" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="@Model.UserToUpdate.Status" class="form-label mt-4">Status</label>
+            <input type="text" asp-for="@Model.UserToUpdate.Status" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="@Model.UserToUpdate.Organization" class="form-label mt-4">Organization</label>
+            <input type="text" asp-for="@Model.UserToUpdate.Organization" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="@Model.UserToUpdate.Role_ID" class="form-label mt-4">Role</label>
+            <select asp-for="@Model.UserToUpdate.Role_ID" class="form-select">
+                <option value="2">Faculty Associate</option>
+                <option value="3">Academic Collaborator</option>
+                <option value="4">Industry Partner</option>
+                <option value="5">Project Manager</option>
+                <option value="6">Admin Staff</option>
+                <option value="7">JMU Sponsored Programs</option>
+            </select>
+        </div>
+
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-outline-primary">Save Changes</button>
+            <a asp-page="/User/UserDashboard" class="btn btn-outline-dark">Cancel</a>
+        </div>
+    </form>
+</div>

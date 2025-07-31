@@ -1,0 +1,127 @@
+﻿@page
+@model Lab2.Pages.Login.CreateHashedLoginModel
+@{
+}
+
+<style>
+    .table-responsive {
+        overflow-x: auto;
+    }
+
+    table thead th {
+        background-color: #450084;
+        color: white;
+        border: none;
+        padding: 0.75rem 1rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-size: 0.95rem;
+    }
+
+    table td {
+        padding: 0.75rem 1rem;
+        vertical-align: middle;
+        border-top: 1px solid #ddd;
+    }
+
+    table tbody tr:hover {
+        background-color: #f2e6ff;
+    }
+
+    .btn-outline-primary {
+        color: #450084;
+        border: 1.5px solid #450084;
+        border-radius: 0.5rem;
+        transition: all 0.2s ease-in-out;
+        font-weight: 500;
+    }
+
+        .btn-outline-primary:hover {
+            background-color: #450084;
+            color: white;
+            border-color: #450084;
+        }
+
+    .btn-outline-success {
+        color: #450084;
+        border-color: #450084;
+    }
+
+        .btn-outline-success:hover {
+            background-color: #450084;
+            color: white;
+            border-color: #450084;
+        }
+
+    .btn-outline-dark:hover {
+        background-color: #450084;
+        color: white;
+        border-color: #450084;
+    }
+
+    .btn-outline-dark {
+        color: #450084;
+        border-color: #450084;
+    }
+
+        .btn-outline-dark:hover {
+            background-color: #450084;
+            color: white;
+            border-color: #450084;
+        }
+</style>
+
+<h2>Create a New User</h2>
+
+<form method="post" asp-page-handler="">
+    <label>Email:</label>
+    <input asp-for="Email" class="form-control" required />
+    <br />
+
+    <label>Password:</label>
+    <input asp-for="Password" type="text" class="form-control" />
+    <br />
+
+    <label>First Name:</label>
+    <input asp-for="FirstName" class="form-control" required />
+    <br />
+
+    <label>Last Name:</label>
+    <input asp-for="LastName" class="form-control" required />
+    <br />
+
+    <label>Status:</label>
+    <select asp-for="Status" class="form-control">
+        <option value="Active">Active</option>
+        <option value="Inactive">Inactive</option>
+
+    </select>
+    <br />
+
+    <label>Organization:</label>
+    <input asp-for="Organization" class="form-control" required />
+    <br />
+
+    <label>Role:</label>
+    <select asp-for="RoleID" class="form-control">
+        <option value="2">Faculty Associate</option>
+        <option value="3">Academic Collaborator</option>
+        <option value="4">Industry Partner</option>
+        <option value="5">Project Manager</option> 
+        <option value="6">Admin Staff</option>
+        <option value="7">JMU Sponsored Programs</option>
+    </select>
+    <br />
+    <button type="submit" class="btn btn-outline-dark" asp-page-handler="PopulateHandler" formnovalidate>Populate</button>
+
+    <button type="submit" class="btn btn-outline-success" asp-page-handler="">Create User</button>
+
+</form>
+<br />
+@if (ViewData["UserCreate"] != null)
+{
+    <p class="text-success">@ViewData["UserCreate"]</p>
+}
+<a asp-page="/User/UserDashboard" class="btn btn-outline-success">Back to All Users</a>
+
+

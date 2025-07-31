@@ -1,0 +1,189 @@
+﻿@page
+@model Lab2.Pages.Project.ProjectTasksModel
+@{
+	ViewData["Title"] = "Project Tasks";
+}
+
+<style>
+	.table-responsive {
+	overflow-x: auto;
+	}
+
+	table thead th {
+	background-color: #450084;
+	color: white;
+	border: none;
+	padding: 0.75rem 1rem;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	font-size: 0.95rem;
+	}
+
+	table td {
+	padding: 0.75rem 1rem;
+	vertical-align: middle;
+	border-top: 1px solid #ddd;
+	}
+
+	table tbody tr:hover {
+	background-color: #f2e6ff;
+	}
+
+	.btn-outline-primary {
+	color: #450084;
+	border: 1.5px solid #450084;
+	border-radius: 0.5rem;
+	transition: all 0.2s ease-in-out;
+	font-weight: 500;
+	}
+
+	.btn-outline-primary:hover {
+	background-color: #450084;
+	color: white;
+	border-color: #450084;
+	}
+
+	.btn-outline-success {
+	color: #450084;
+	border-color: #450084;
+	}
+
+	.btn-outline-success:hover {
+	background-color: #450084;
+	color: white;
+	border-color: #450084;
+	}
+
+	.btn-outline-dark:hover {
+	background-color: #450084;
+	color: white;
+	border-color: #450084;
+	}
+
+	.btn-outline-dark {
+	color: #450084;
+	border-color: #450084;
+	}
+
+	.btn-outline-dark:hover {
+	background-color: #450084;
+	color: white;
+	border-color: #450084;
+	}
+
+	.card {
+	border-left: 5px solid #450084;
+	border-radius: 1rem;
+	transition: box-shadow 0.2s;
+	}
+
+	.card:hover {
+	box-shadow: 0 4px 12px rgba(69, 0, 132, 0.1);
+	}
+
+	.card-title {
+	font-weight: 600;
+	color: #450084;
+	margin-bottom: 1rem;
+	}
+
+	.btn {
+	white-space: nowrap;
+	}
+</style>
+
+<h2 class="mt-4 mb-3" style="color: #450084">Tasks View</h2>
+
+@foreach (var task in Model.ProjectTaskList)
+{
+	var collapseId = $"taskCollapse_{task.Task_ID}";
+	var assignedUser = Model.UserList.FirstOrDefault(u => u.User_ID == task.AssignedUser);
+	var role = HttpContext.Session.GetString("Role");
+
+	<div class="card mb-4 shadow-sm border-0">
+		<div class="card-header bg-white">
+			<div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+				<div class="d-flex align-items-center gap-3 flex-wrap">
+					<h5 class="mb-0 card-title">@task.Title</h5>
+					<button class="btn btn-sm btn-outline-secondary" type="button"
+							data-bs-toggle="collapse" data-bs-target="#@collapseId"
+							aria-expanded="false" aria-controls="@collapseId">
+						Add Note
+					</button>
+				</div>
+
+				<div class="d-flex align-items-center gap-2 flex-wrap">
+					<form method="post" class="d-flex gap-2 align-items-center mb-0">
+						<input type="hidden" name="TaskID" value="@task.Task_ID" />
+						<input type="hidden" name="ProjectID" value="@Model.ProjectID" />
+						<input type="hidden" name="submitType" value="status" />
+						<select name="NewStatus" class="form-select form-select-sm">
+							<option value="Not Started" selected="@("Not Started" == task.Status)">Not Started</option>
+							<option value="In Progress" selected="@("In Progress" == task.Status)">In Progress</option>
+							<option value="Complete" selected="@("Complete" == task.Status)">Complete</option>
+						</select>
+						<button type="submit" class="btn btn-outline-primary btn-sm">Update Status</button>
+					</form>
+
+					@if (role == "Center Director" || role == "Admin Staff")
+					{
+						<form method="post" class="d-flex gap-2 align-items-center mb-0">
+							<input type="hidden" name="TaskID" value="@task.Task_ID" />
+							<input type="hidden" name="ProjectID" value="@Model.ProjectID" />
+							<input type="hidden" name="submitType" value="user" />
+							<select name="AssignedUserID" class="form-select form-select-sm">
+								@foreach (var user in Model.UserList)
+								{
+									<option value="@user.User_ID" selected="@(user.User_ID == task.AssignedUser)">
+										@user.FirstName @user.LastName
+									</option>
+								}
+							</select>
+							<button type="submit" class="btn btn-outline-primary btn-sm">Assign User</button>
+						</form>
+					}
+					else
+					{
+						<span class="text-muted small">
+							<strong>Assigned:</strong> @(assignedUser != null ? $"{assignedUser.FirstName} {assignedUser.LastName}" : "Unassigned")
+						</span>
+					}
+				</div>
+			</div>
+		</div>
+
+		<div id="@collapseId" class="collapse">
+			<div class="card-body px-3 py-3">
+				<div class="mt-3">
+					<h6 style="color: #450084;">Notes:</h6>
+					<ul class="list-unstyled">
+						@foreach (var note in Model.TaskNotes[task.Task_ID])
+						{
+							<li>
+								<small class="text-muted">@note.Timestamp?.ToString("g")</small><br />
+								<span>@note.Content</span>
+								<hr />
+							</li>
+						}
+					</ul>
+
+					<form method="post" class="mt-2">
+						<input type="hidden" name="TaskID" value="@task.Task_ID" />
+						<input type="hidden" name="ProjectID" value="@Model.ProjectID" />
+						<input type="hidden" name="submitType" value="note">
+						<textarea name="NoteContent" class="form-control mb-2" rows="2" placeholder="Add a new note..." required></textarea>
+						<button type="submit" class="btn btn-outline-primary">Add Note</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+}
+
+<div class="d-flex gap-2 mt-3">
+	@if (HttpContext.Session.GetString("Role") == "Center Director" || HttpContext.Session.GetString("Role") == "Admin Staff")
+	{
+		<a asp-page="AddProjectTask" class="btn btn-outline-success" asp-route-projectid="@Model.ProjectID">Add New Task</a>
+	}
+	<a asp-page="/Project/Index" class="btn btn-outline-dark">Back to Projects</a>
+</div>

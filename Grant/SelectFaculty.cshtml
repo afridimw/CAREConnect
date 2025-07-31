@@ -1,0 +1,44 @@
+﻿@page
+@model Lab2.Pages.Grant.SelectFacultyModel
+@{
+    ViewData["Title"] = "Select Faculty";
+}
+
+<h2>Select User to Add</h2>
+<table class="table table-boarded table-responsive table-hover">
+    <thead>
+        <tr>
+            <th>Last Name</th>
+            <th>First Name</th>
+            <th>Email</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var facultyMember in Model.AllUsers)
+        {
+            <tr>
+                <td>@facultyMember.LastName</td>
+                <td>@facultyMember.FirstName</td>
+                <td>@facultyMember.Email</td>
+                <td>
+                    <!-- Chat helped me with this hidden part in the button. -->
+                    <form method="post" asp-page-handler="Select">
+                        <input type="hidden" name="Faculty_id" value="@facultyMember.User_ID" />
+                        <input type="hidden" asp-for="GrantID" value="@Model.GrantID" />
+                        <button type="submit" class="btn btn-primary">Select</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- This if goes with the error handling for select faculty/add faculty. Chat helped with this. -->
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["ErrorMessage"]
+    </div>
+}

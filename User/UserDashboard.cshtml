@@ -1,0 +1,112 @@
+﻿@page
+@model Lab2.Pages.User.UserDashboardModel
+@{
+    ViewData["Title"] = "User Dashboard";
+}
+
+<style>
+    .table-responsive {
+        overflow-x: auto;
+    }
+
+    table thead th {
+        background-color: #450084;
+        color: white;
+        border: none;
+        padding: 0.75rem 1rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-size: 0.95rem;
+    }
+
+    table td {
+        padding: 0.75rem 1rem;
+        vertical-align: middle;
+        border-top: 1px solid #ddd;
+    }
+
+    table tbody tr:hover {
+        background-color: #f2e6ff;
+    }
+
+    .btn-outline-primary {
+        color: #450084;
+        border: 1.5px solid #450084;
+        border-radius: 0.5rem;
+        transition: all 0.2s ease-in-out;
+        font-weight: 500;
+    }
+
+        .btn-outline-primary:hover {
+            background-color: #450084;
+            color: white;
+            border-color: #450084;
+        }
+
+    .btn-outline-success {
+        color: #450084;
+        border-color: #450084;
+    }
+
+        .btn-outline-success:hover {
+            background-color: #450084;
+            color: white;
+            border-color: #450084;
+        }
+
+    .btn-outline-dark:hover {
+        background-color: #450084;
+        color: white;
+        border-color: #450084;
+    }
+
+    .btn-outline-dark {
+        color: #450084;
+        border-color: #450084;
+    }
+
+        .btn-outline-dark:hover {
+            background-color: #450084;
+            color: white;
+            border-color: #450084;
+        }
+</style>
+
+<h2>User Dashboard</h2>
+
+<table class="table table-bordered table-responsive table-hover">
+    <thead>
+        <tr>
+            <th>Email:</th>
+            <th>First Name:</th>
+            <th>Last Name:</th>
+            <th>Status:</th>
+            <th>Organization:</th>
+            <th>Role:</th>
+        </tr>
+    </thead>
+    @{
+        foreach (var user in Model.UsersList)
+        {
+            <tr>
+                <td>@user.Email</td>
+                <td>@user.FirstName</td>
+                <td>@user.LastName</td>
+                <td>@user.Status</td>
+                <td>@user.Organization</td>
+                <td>@user.RoleType</td>
+
+
+
+                <td>
+                    <a asp-page="/User/EditUser" asp-route-email="@user.Email" class="btn btn-outline-primary">Edit</a>
+                    <a asp-page="/User/ViewAssignments" asp-route-userId="@user.User_ID" class="btn btn-outline-dark">View Assignments</a>
+                </td>
+
+
+            </tr>
+
+        }
+    }
+</table>
+<a asp-page="/Login/CreateHashedLogin" class="btn btn-outline-success">Add New User</a>

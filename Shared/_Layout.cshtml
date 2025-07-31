@@ -1,0 +1,237 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Care Connect</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Lab2.styles.css" asp-append-version="true" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+
+
+    <style>
+        body {
+            font-family: "Poppins";
+        }
+
+        header .navbar {
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+        }
+
+
+        .nav-link {
+            color: #450084 !important;
+            background-color: white !important;
+            margin: 0 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            transition: all 0.2s ease-in-out;
+            white-space: nowrap;
+        }
+
+        a {
+            color: mediumpurple;
+            text-decoration: none;
+            background-color: transparent;
+        }
+
+        .navbar .nav-link:hover {
+            color: purple !important;
+            text-decoration: none;
+            outline: 2px solid purple;
+            outline-offset: 4px;
+            border-radius: 4px;
+            transition: outline 0.2s ease-in-out;
+        }
+
+        .navbar-nav {
+            align-items: center;
+        }
+
+        .nav-item {
+            margin: 0.25rem 0.75rem;
+        }
+
+        footer {
+            background-color: #f8f9fa;
+            font-size: 0.85rem;
+            border-top: 1px solid #dee2e6;
+            color: #6c757d;
+        }
+
+        footer a {
+            color: mediumpurple;
+            text-decoration:none;
+        }
+
+        footer a:hover {
+            color: purple;
+            text-decoration: underline;
+        }
+
+        #nav {
+            background-color: white;
+        }
+
+        a {
+            color: mediumpurple;
+            text-decoration: none;
+            background-color: transparent;
+        }
+
+        a:hover {
+            color: purple;
+            text-decoration: underline;
+        }
+
+        .btn-outline-primary {
+            color: #450084;
+            border: 2px solid #450084;
+            background-color: transparent;
+            border-radius: 8px;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            transition: all 0.2s ease-in-out;
+        }
+
+            .btn-outline-primary:hover {
+                background-color: #450084;
+                color: white;
+            }
+    </style>
+</head>
+<body class="@((ViewData["Title"] as string) == "Login" ? "login-layout" : "")">
+    <div class="d-flex flex-column min-vh-100">
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid d-flex align-items-center">
+                <a class="navbar-brand me-3 ms-0 ps-0" href="/"><img src="@Url.Content("~/images/logo.png")" style="max-height: 45px" /></a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+               @*  PUT AN IF HERE TO ONLY SHOW CERTAIN MENUS DEPENDING ON WHAT USER TYPE *@
+                <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                    <ul class="navbar-nav d-flex flex-row flex-wrap justify-content-start align-items-center">
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-page="/Index">
+                                <i class="fa-solid fa-house"></i> My Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-page="/Grant/Index">
+                                <i class="fa-solid fa-folder"></i> Grant</a>
+                        </li>
+                      
+                            
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-area="" asp-page="/Project/Index">
+                                        <i class="fa-solid fa-folder"></i> Project</a>
+                                </li>
+                            
+                       @* disabling this for now:
+                           <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-page="/Publications/Index">
+                                <i class="fa-solid fa-book-open"></i> Publications</a>
+                        </li>
+                       *@
+
+                       @*  for now we are linking sponsor org instead of partner just because we haven't done the partner page *@
+                            @if (Context.Session.GetString("Role") == "Industry Partner")
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-area="" asp-page="/SponsorOrg/PartnerPortal">
+                                        <i class="fa-solid fa-handshake"></i> My Portal
+                                    </a>
+                                </li>
+                            }
+                            else if (Context.Session.GetString("Role") == "Admin Staff" || Context.Session.GetString("Role") == "Center Director")
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-area="" asp-page="/SponsorOrg/Index">
+                                        <i class="fa-solid fa-handshake"></i> Partner
+                                    </a>
+                                </li>
+                            }
+
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-page="/Messages/Index">
+                                <i class="fa-solid fa-envelope"></i> Messages</a>
+                        </li>
+                        @* Disabling this for now: 
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-page="/Privacy/Index">
+                                <i class="fa-solid fa-shield-halved"></i> Privacy</a>
+                        </li>
+                        *@
+                            @if (Context.Session.GetString("RoleType") == "Center Director" || Context.Session.GetString("RoleType") == "Admin Staff")
+                            {
+                        <li class="nav-item">
+                                    <a class="nav-link" asp-area="" asp-page="/User/UserDashboard">
+                            <i class="fa-solid fa-user-plus"></i>Users
+                            </a>
+                        </li>
+                                          
+                            }
+                            @if (Context.Session.GetString("RoleType") == "Center Director" || Context.Session.GetString("RoleType") == "Admin Staff")
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-area="" asp-page="/Admin/AdminSearch">
+                                        <i class="fa-solid fa-file-lines"></i> Generate A Report
+                                    </a>
+                                </li>
+                            }
+  
+
+                        </ul>
+                    @* Chat helped with this login block *@
+                    <!-- Login/Logout Block Starts Here -->
+                    <div class="d-flex align-items-center ms-auto">
+                        @if (Context.Session.GetString("Email") != null) // Check if user is logged in
+                        {
+                            var userRole = Context.Session.GetString("Role") ?? "General User"; // Default if role not found
+
+                            <!-- Display the logged-in user's email & role -->
+                            <span class="navbar-text me-3">
+                                Welcome, @Context.Session.GetString("Email") - @userRole Permissions
+                            </span>
+
+                            <!-- Logout Button -->
+                            <a asp-page="/Login/ParameterizedLogin" asp-route-logout="true" class="btn btn-outline-primary ms-2">Logout</a>
+                        }
+                        else // If user is not logged in
+                        {
+                            <!-- Sign-in Button -->
+                            <a asp-page="/Login/ParameterizedLogin" class="btn btn-link">Sign in</a>
+                        }
+                    </div>
+                    <!-- Login/Logout Block Ends Here -->
+
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="text-center" style="padding: 1rem 0; font-size: 0.9rem;">
+        <div class="container">
+            <span>&copy; 2025 - JMUCARE</span> || <a asp-area="" asp-page="/Privacy">Privacy</a>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</div>
+</body>
+</html>

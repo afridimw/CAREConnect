@@ -1,0 +1,132 @@
+﻿@page
+@model Lab2.Pages.SponsorOrg.SponsorOrgDetailsModel
+@{
+    ViewData["Title"] = "Sponsor Org Details";
+}
+<style>
+	.table-responsive {
+		overflow-x: auto;
+	}
+
+	table thead th {
+		background-color: #450084;
+		color: white;
+		border: none;
+		padding: 0.75rem 1rem;
+		text-transform: uppercase;
+		letter-spacing: 0.5px;
+		font-size: 0.95rem;
+	}
+
+	table td {
+		padding: 0.75rem 1rem;
+		vertical-align: middle;
+		border-top: 1px solid #ddd;
+	}
+
+	table tbody tr:hover {
+		background-color: #f2e6ff;
+	}
+
+	.btn-outline-primary {
+		color: #450084;
+		border: 1.5px solid #450084;
+		border-radius: 0.5rem;
+		transition: all 0.2s ease-in-out;
+		font-weight: 500;
+	}
+
+		.btn-outline-primary:hover {
+			background-color: #450084;
+			color: white;
+			border-color: #450084;
+		}
+</style>
+@if (Model.IsInactiveByUpload)
+{
+	<div class="alert alert-warning">
+		⚠️ This organization has not uploaded any files in the last 30 days.
+	</div>
+}
+
+<div class="card p-3 shadow-sm d-flex flex-wrap justify-content-between align-items-start gap-4 mb-4">
+	<div class="table-responsive">
+		<h4>Sponsor Organization Information</h4>
+		<table class="table table-bordered table-striped">
+			<tr>
+				<th>Organization Name:</th>
+				<td>@Model.OrgName</td>
+			</tr>
+			<tr>
+				<th>Status:</th>
+				<td>@Model.StatusFlag</td>
+			</tr>
+			<tr>
+				<th>Sector:</th>
+				<td>@Model.Sector</td>
+			</tr>
+		</table>
+	</div>
+	<h5 class="mt-4">Upload a File</h5>
+
+	<form method="post" enctype="multipart/form-data">
+		<input type="hidden" asp-for="SponsorOrgID" />
+
+		<div class="mb-3">
+			<label class="form-label">Choose File</label>
+			<input type="file" class="form-control" asp-for="SponsorUpload" />
+		</div>
+		<div class="mb-3">
+			<label class="form-label">File Type</label>
+			<select class="form-control" asp-for="FileType">
+				<option value="">-- Select File Type --</option>
+				<option value="Meeting Notes">Meeting Notes</option>
+				<option value="Presentation">Presentation</option>
+				<option value="Proposal">Proposal</option>
+				<option value="Meeting Minutes">Meeting Minutes</option>
+			</select>
+		</div>
+
+		<div class="mb-3">
+			<label class="form-label">Note</label>
+			<textarea class="form-control" asp-for="SponsorNote" rows="3"></textarea>
+		</div>
+
+		<button type="submit" class="btn btn-outline-primary">Upload</button>
+	</form>
+
+	<!-- ChatGPT helped implement this condition to only show the uploads table if any uploads exist -->
+	@if (Model.PartnerUploads.Any())
+	{
+		<div class="table-responsive mt-4">
+			<h4> Uploaded Files</h4>
+			<table class="table table-bordered table-hover">
+				<thead>
+					<tr>
+						<th>File</th>
+						<th>Upload Date</th>
+						<th>Note</th>
+						<th>File Type</th>
+					</tr>
+				</thead>
+				<tbody>
+					<!-- Chat helped make the file name clickable into a new tab. -->
+
+					@foreach (var upload in Model.PartnerUploads)
+					{
+						<tr>
+							<td><a href="~/fileupload/@upload.FileName" target="_blank">@upload.FileName</a></td>
+							<td>@upload.UploadDate.ToShortDateString()</td>
+							<td>@upload.Note</td>
+							<td>@upload.FileType</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+	}
+</div>
+
+
+<a asp-page="Index" class="btn btn-outline-primary">Back to Organizations</a>
+

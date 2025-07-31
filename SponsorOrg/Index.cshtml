@@ -1,0 +1,208 @@
+﻿@page
+@model Lab2.Pages.SponsorOrg.IndexModel
+@{
+	ViewData["Title"] = "Sponsor Org Details";
+}
+<style>
+	.table-responsive {
+		overflow-x: auto;
+	}
+
+	table thead th {
+		background-color: #450084;
+		color: white;
+		border: none;
+		padding: 0.75rem 1rem;
+		text-transform: uppercase;
+		letter-spacing: 0.5px;
+		font-size: 0.95rem;
+	}
+
+	table td {
+		padding: 0.75rem 1rem;
+		vertical-align: middle;
+		border-top: 1px solid #ddd;
+	}
+
+	table tbody tr:hover {
+		background-color: #f2e6ff;
+	}
+
+	.btn-outline-primary {
+		color: #450084;
+		border: 1.5px solid #450084;
+		border-radius: 0.5rem;
+		transition: all 0.2s ease-in-out;
+		font-weight: 500;
+	}
+
+		.btn-outline-primary:hover {
+			background-color: #450084;
+			color: white;
+			border-color: #450084;
+		}
+
+	.btn-outline-success {
+		color: #450084;
+		border-color: #450084;
+	}
+
+		.btn-outline-success:hover {
+			background-color: #450084;
+			color: white;
+			border-color: #450084;
+		}
+
+	.btn-outline-dark:hover {
+		background-color: #450084;
+		color: white;
+		border-color: #450084;
+	}
+
+	.btn-outline-dark {
+		color: #450084;
+		border-color: #450084;
+	}
+
+		.btn-outline-dark:hover {
+			background-color: #450084;
+			color: white;
+			border-color: #450084;
+		}
+</style>
+<!-- Chart.js added with help from ChatGPT — including setup and data binding with ViewData 
+	https://www.c-sharpcorner.com/article/creating-charts-with-asp-net-core/
+-->
+@if (HttpContext.Session.GetString("Role") == "Admin Staff" || HttpContext.Session.GetString("Role") == "Center Director")
+{
+	<div class="card p-4 shadow-sm border rounded mb-4">
+		<h5 class="mb-3">Partnerships by Stage</h5>
+		<canvas id="partnershipChart" style="max-height: 200px;"></canvas>
+	</div>
+
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+	<script>
+		const ctx = document.getElementById('partnershipChart').getContext('2d');
+		new Chart(ctx, {
+			type: 'bar',
+			data: {
+				labels: ['Prospect', 'Initial Contact', 'Negotiation', 'MOU Signed', 'Active', 'On Hold', 'Inactive'],
+				datasets: [{
+					data: [
+		@ViewData["CountProspect"],
+		@ViewData["CountInitialContact"],
+		@ViewData["CountNegotiation"],
+		@ViewData["CountMOUSigned"],
+		@ViewData["CountActive"],
+		@ViewData["CountOnHold"],
+		@ViewData["CountInactive"]
+					],
+					backgroundColor: '#6f42c1',
+					borderRadius: 6,
+					barThickness: 30
+				}]
+			},
+			options: {
+				responsive: true,
+				plugins: {
+					legend: { display: false }
+				},
+				scales: {
+					y: {
+						beginAtZero: true,
+						ticks: { precision: 0 },
+						grid: { color: '#f0f0f0' }
+					}
+				}
+			}
+		});
+	</script>
+}
+
+<div class="card p-4 shadow-sm mb-4" style="max-width: 700px; margin: 0 auto;">
+	<form method="get" class="d-flex flex-wrap justify-content-center align-items-center gap-2 mb-4">
+		<div class="form-group">
+			<label for="statusFilter" class="form-label">Filter by Status</label>
+			<select asp-for="SelectedStatus" name="SelectedStatus" class="form-select form-select-sm" aria-label="Status filter">
+				<option value="">All</option>
+				<option value="Prospect" selected="@(Model.SelectedStatus == "Prospect")">Prospect</option>
+				<option value="Initial Contact" selected="@(Model.SelectedStatus == "Initial Contact")">Initial Contact</option>
+				<option value="Negotiation" selected="@(Model.SelectedStatus == "Negotiation")">Negotiation</option>
+				<option value="MOU Signed" selected="@(Model.SelectedStatus == "MOU Signed")">MOU Signed</option>
+				<option value="Active" selected="@(Model.SelectedStatus == "Active")">Active</option>
+				<option value="On Hold" selected="@(Model.SelectedStatus == "On Hold")">On Hold</option>
+				<option value="Inactive" selected="@(Model.SelectedStatus == "Inactive")">Inactive</option>
+			</select>
+		</div>
+
+		<button type="submit" class="btn btn-outline-primary btn-sm px-4" role="button">Apply Filter</button>
+	</form>
+</div>
+
+
+</div>
+
+<!-- Asked chat for help with session state actions-->
+
+<div class="card p-4 shadow-sm border rounded">
+	<div class="table-responsive">
+		<table class="table table-bordered table-hover">
+			<thead>
+				<tr>
+					<th>Organization Name</th>
+					<th>Status</th>
+					<th>Sector</th>
+					@if (HttpContext.Session.GetString("Role") == "Admin Staff" || HttpContext.Session.GetString("Role") == "Center Director")
+					{
+						<th>Engagement Progress</th>
+					}
+				</tr>
+			</thead>
+			<tbody>
+				<!-- Asked chat for help with showing progress bar even if prgress is 0%-->
+				@foreach (var sponsor in Model.SponsorOrgs)
+				{
+					var percent = Model.GetProgressPercent(sponsor.Status_Flag);
+					var barColor = Model.GetProgressBarColor(percent);
+					var minWidth = percent == 0 ? "min-width: 1rem;" : "";
+
+					<tr>
+						<td>@sponsor.OrgName</td>
+						<td>@sponsor.Status_Flag</td>
+						<td>@sponsor.Sector</td>
+						<td style="width: 200px;">
+							<div class="progress mt-1">
+								<div class="progress-bar @barColor"
+									 role="progressbar"
+									 style="width:@percent%; @minWidth"
+									 aria-valuenow="@percent"
+									 aria-valuemin="0"
+									 aria-valuemax="100">
+									@percent%
+								</div>
+							</div>
+						</td>
+						@if (HttpContext.Session.GetString("Role") == "Admin Staff" || HttpContext.Session.GetString("Role") == "Center Director")
+						{
+							<td>
+								<a asp-page="EditOrg" asp-route-sponsororgid="@sponsor.SponsorOrg_ID" class="btn btn-outline-primary">Edit</a>
+							</td>
+							<td>
+								<a asp-page="SponsorOrgDetails" asp-route-sponsororgid="@sponsor.SponsorOrg_ID" class="btn btn-outline-dark">Details</a>
+							</td>
+
+						}
+					</tr>
+				}
+			</tbody>
+		</table>
+	</div>
+
+	@if (HttpContext.Session.GetString("Role") == "Admin Staff" || HttpContext.Session.GetString("Role") == "Center Director")
+	{
+		<div class="mt-3">
+			<a asp-page="AddOrg" class="btn btn-outline-success">Add New Org</a>
+		</div>
+	}
+</div>
+

@@ -1,0 +1,77 @@
+﻿@page
+@model Lab2.Pages.Grant.GraphModel
+@{
+    ViewData["Title"] = "Grant Award Amounts Graph";
+    var labels = Model.DataPoints.Select(p => p.AwardDate.ToString("yyyy-MM-dd")).ToList();
+    var values = Model.DataPoints.Select(p => p.Amount).ToList();
+}
+
+<h2 class="text-center my-4">Grant Award Amounts by Date</h2>
+
+<form method="get" class="d-flex justify-content-center gap-3 mb-4">
+    <div>
+        <label>Start Date:</label>
+        <input type="date" name="StartDate" value="@Model.StartDate?.ToString("yyyy-MM-dd")" class="form-control" />
+    </div>
+    <div>
+        <label>End Date:</label>
+        <input type="date" name="EndDate" value="@Model.EndDate?.ToString("yyyy-MM-dd")" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-outline-primary align-self-end">Generate</button>
+    <button class="btn btn-outline-primary align-self-end" onclick="window.print()">Print to PDF</button>
+    <style> 
+        @@media print {
+            #graph-container {
+                width: 100% !important;
+                max-width: 100% !important;
+                overflow: visible !important;
+            }
+
+            canvas, svg {
+                max-width: 100% !important;
+                height: auto !important;
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+
+    <a asp-page="Index" class="btn btn-outline-primary align-self-end">Grant View -></a>
+</form>
+
+<div id="graph-container" class="no-print-fix">
+@if (Model.DataPoints.Count > 0)
+{
+    <canvas id="grantChart" width="800" height="400"></canvas>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctx = document.getElementById('grantChart').getContext('2d');
+        const chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: @Html.Raw(Json.Serialize(labels)),
+                datasets: [{
+                    label: 'Award Amount ($)',
+                    data: @Html.Raw(Json.Serialize(values)),
+                    borderColor: '#450084',
+                    backgroundColor: 'rgba(69,0,132,0.2)',
+                    fill: true,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+}
+else if (Model.StartDate != null && Model.EndDate != null)
+{
+    <div class="alert alert-warning text-center">No data found in this date range.</div>
+}
+

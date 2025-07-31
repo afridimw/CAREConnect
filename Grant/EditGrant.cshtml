@@ -1,0 +1,191 @@
+﻿@page
+@model Lab2.Pages.Grant.EditGrantModel
+@{
+    ViewData["Title"] = "Edit Grant";
+}
+
+
+<style>
+    .table-responsive {
+    overflow-x: auto;
+    }
+
+    table thead th {
+    background-color: #450084;
+    color: white;
+    border: none;
+    padding: 0.75rem 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.95rem;
+    }
+
+    table td {
+    padding: 0.75rem 1rem;
+    vertical-align: middle;
+    border-top: 1px solid #ddd;
+    }
+
+    table tbody tr:hover{
+    background-color: #f2e6ff;
+    }
+
+    .btn-outline-primary {
+    color: #450084;
+    border: 1.5px solid #450084;
+    border-radius: 0.5rem;
+    transition: all 0.2s ease-in-out;
+    font-weight: 500;
+    }
+
+    .btn-outline-primary:hover {
+    background-color: #450084;
+    color: white;
+    border-color: #450084;
+    }
+
+    .btn-outline-success {
+    color: #450084;
+    border-color: #450084;
+    }
+
+    .btn-outline-success:hover {
+    background-color: #450084;
+    color: white;
+    border-color: #450084;
+    }
+
+    .btn-outline-dark:hover {
+    background-color: #450084;
+    color: white;
+    border-color: #450084;
+    }
+
+    .btn-outline-dark {
+    color: #450084;
+    border-color: #450084;
+    }
+
+    .btn-outline-dark:hover {
+    background-color: #450084;
+    color: white;
+    border-color: #450084;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #450084;
+    }
+
+    .form-control, .form-select {
+        border-radius: 0.5rem;
+    }
+</style>
+
+<h2 class="mb-4 text-center">Edit Grant</h2>
+<div class="card p-4 shadow-sm border rounded" style="max-width: 600px; margin:0 auto;">
+
+<form asp-page="EditGrant" method="post">
+    
+        @{
+            string role = HttpContext.Session.GetString("Role");
+            int permID = Model.PermID;
+
+            bool canEditRestrictedFields = role == "Admin Staff" || role == "Center Director" || permID == 4;
+        }
+        @*Used chat to help me figure out to do the "bool = format for role permission. *@
+
+
+
+    <input type="hidden" asp-for="@Model.GrantToUpdate.Grant_ID" />
+
+    <div class="mb-3">
+    <label for="Title" class="form-label mt-2">Title</label>
+    <input type="text" asp-for="@Model.GrantToUpdate.Title" />
+    <br />
+
+    <div class="mb-3">
+    <label for="Category" class="form-label mt-2">Category</label>
+    <input type="text" asp-for="@Model.GrantToUpdate.Category" />
+    <br />
+
+    <div class="mb-3">
+    <label for="Type" class="form-label mt-2">Type</label>
+    <input type="text" asp-for="@Model.GrantToUpdate.Type" />
+    <br />
+
+    <div class="mb-3">
+    <label for="Submission_Date" class="form-label mt-2">Submission_Date</label>
+    <input type="date" asp-for="@Model.GrantToUpdate.Submission_Date" />
+    <br />
+
+    <div class="mb-3">
+    <label for="Award_Date" class="form-label mt-2">Award_Date</label>
+    <input type="date" asp-for="@Model.GrantToUpdate.Award_Date" />
+    <br />
+
+    <div class="mb-3">
+    <label for="Deadline" class="form-label mt-2">Deadline</label>
+    <input type="date" asp-for="@Model.GrantToUpdate.Deadline" />
+    <br />
+
+    @if (canEditRestrictedFields)
+    {
+        <div class="mb-3">
+            <label for="AmountRequested" class="form-label">Amount Requested</label>
+            <input type="number" asp-for="GrantToUpdate.AmountRequested" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label for="AmountAwarded" class="form-label">Amount Awarded</label>
+            <input type="number" asp-for="GrantToUpdate.AmountAwarded" class="form-control" />
+        </div>
+
+
+    }
+    else
+    {
+        <div class="mb-3">
+            <label for="AmountRequested" class="form-label">Amount Requested</label>
+            <input type="number" asp-for="GrantToUpdate.AmountRequested" class="form-control" disabled />
+            <input type="hidden" asp-for="GrantToUpdate.AmountRequested" />
+        </div>
+        <div class="mb-3">
+            <label for="AmountAwarded" class="form-label">Amount Awarded</label>
+            <input type="number" asp-for="GrantToUpdate.AmountAwarded" class="form-control" disabled />
+            <input type="hidden" asp-for="GrantToUpdate.AmountAwarded" />
+        </div>
+    }
+
+@if (canEditRestrictedFields)
+{
+    <div class="mb-3">
+    <label for="Status" class="form-label mt-2">Status</label>
+    <select asp-for="@Model.GrantToUpdate.Status">
+        <option value="N/A">N/A</option>
+        <option value="Opportunity">Opportunity</option>
+        <option value="Draft">Draft</option>
+        <option value="Applied">Applied</option>
+        <option value="Pending">Pending</option>
+        <option value="Awarded">Awarded</option>
+        <option value="Rejected">Rejected</option>
+        <option value="Completed">Completed</option>
+    </select>
+    </div>
+    <div class="mb-3">
+    <label for="Pursue" class="form-label mt-2">Pursue</label>
+    <select asp-for="@Model.GrantToUpdate.Pursue">
+        <option value="YES">YES</option>
+        <option value="NO">NO</option>
+    </select>
+    </div>
+}
+else
+{
+    <input type="hidden" asp-for="GrantToUpdate.Status" />
+    <input type="hidden" asp-for="GrantToUpdate.Pursue" />
+}
+
+    <input type="submit" class="btn btn-outline-success" asp-page="EditGrant" />
+    <a asp-page="Index" class="btn btn-outline-dark">Cancel</a>
+
+</form>

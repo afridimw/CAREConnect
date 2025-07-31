@@ -1,0 +1,125 @@
+﻿@page
+@model Lab2.Pages.Project.AddProjectTaskModel
+@{
+	ViewData["Title"] = "Add Project Task";
+}
+
+<style>
+	.table-responsive {
+		overflow-x: auto;
+	}
+
+	table thead th {
+		background-color: #450084;
+		color: white;
+		border: none;
+		padding: 0.75rem 1rem;
+		text-transform: uppercase;
+		letter-spacing: 0.5px;
+		font-size: 0.95rem;
+	}
+
+	table td {
+		padding: 0.75rem 1rem;
+		vertical-align: middle;
+		border-top: 1px solid #ddd;
+	}
+
+	table tbody tr:hover {
+		background-color: #f2e6ff;
+	}
+
+	.btn-outline-primary {
+		color: #450084;
+		border: 1.5px solid #450084;
+		border-radius: 0.5rem;
+		transition: all 0.2s ease-in-out;
+		font-weight: 500;
+	}
+
+		.btn-outline-primary:hover {
+			background-color: #450084;
+			color: white;
+			border-color: #450084;
+		}
+
+	.btn-outline-success {
+		color: #450084;
+		border-color: #450084;
+	}
+
+		.btn-outline-success:hover {
+			background-color: #450084;
+			color: white;
+			border-color: #450084;
+		}
+
+	.btn-outline-dark:hover {
+		background-color: #450084;
+		color: white;
+		border-color: #450084;
+	}
+
+	.btn-outline-dark {
+		color: #450084;
+		border-color: #450084;
+	}
+
+		.btn-outline-dark:hover {
+			background-color: #450084;
+			color: white;
+			border-color: #450084;
+		}
+</style>
+
+<h2 class="mt-4 mb-3" style="color:#450084;">Add New Task</h2>
+
+<form method="post">
+	<input type="hidden" asp-for="NewTask.Project_ID" />
+
+	<div class="mb-3">
+		<label asp-for="NewTask.Title" class="form-label">Title</label>
+		<input asp-for="NewTask.Title" class="form-control" required />
+	</div>
+
+	<div class="mb-3">
+		<label asp-for="NewTask.Description" class="form-label">Description</label>
+		<textarea asp-for="NewTask.Description" class="form-control" rows="3"></textarea>
+	</div>
+
+	<div class="mb-3">
+		<label asp-for="NewTask.Priority" class="form-label">Priority</label>
+		<select asp-for="NewTask.Priority" class="form-select">
+			<option value="Low">Low</option>
+			<option value="Normal" selected>Normal</option>
+			<option value="High">High</option>
+		</select>
+	</div>
+
+	<div class="mb-3">
+		<label asp-for="NewTask.Status" class="form-label">Status</label>
+		<select asp-for="NewTask.Status" class="form-select">
+			<option value="Not Started" selected>Not Started</option>
+			<option value="In Progress">In Progress</option>
+			<option value="Complete">Complete</option>
+		</select>
+	</div>
+
+	<div class="mb-3">
+		<label asp-for="NewTask.AssignedUser" class="form-label">Assign To</label>
+		<select asp-for="NewTask.AssignedUser" asp-items="Model.SystemUserList" class="form-select">
+			<option value="">-- Select User --</option>
+		</select>
+	</div>
+
+	<div class="mb-4">
+		<label asp-for="NewTask.Due_Date" class="form-label">Due Date</label>
+		<input asp-for="NewTask.Due_Date" type="date" class="form-control" />
+		<small class="text-muted">Leave blank to set a default due date.</small>
+	</div>
+
+	<div class="d-flex gap-2">
+		<button type="submit" class="btn btn-outline-success">Add Task</button>
+		<a asp-page="/Project/ProjectTasks" asp-route-projectid="@Model.NewTask.Project_ID" class="btn btn-outline-dark">Cancel</a>
+	</div>
+</form>

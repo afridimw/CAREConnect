@@ -1,0 +1,117 @@
+﻿@page
+@model Lab2.Pages.SponsorOrg.AddOrgModel
+@{
+	ViewData["Title"] = "Add New Org";
+}
+<style>
+	.table-responsive {
+		overflow-x: auto;
+	}
+
+	table thead th {
+		background-color: #450084;
+		color: white;
+		border: none;
+		padding: 0.75rem 1rem;
+		text-transform: uppercase;
+		letter-spacing: 0.5px;
+		font-size: 0.95rem;
+	}
+
+	table td {
+		padding: 0.75rem 1rem;
+		vertical-align: middle;
+		border-top: 1px solid #ddd;
+	}
+
+	table tbody tr:hover {
+		background-color: #f2e6ff;
+	}
+
+	.btn-outline-primary {
+		color: #450084;
+		border: 1.5px solid #450084;
+		border-radius: 0.5rem;
+		transition: all 0.2s ease-in-out;
+		font-weight: 500;
+	}
+
+		.btn-outline-primary:hover {
+			background-color: #450084;
+			color: white;
+			border-color: #450084;
+		}
+
+	.btn-outline-success {
+		color: #450084;
+		border-color: #450084;
+	}
+
+		.btn-outline-success:hover {
+			background-color: #450084;
+			color: white;
+			border-color: #450084;
+		}
+
+	.btn-outline-dark:hover {
+		background-color: #450084;
+		color: white;
+		border-color: #450084;
+	}
+
+	.btn-outline-dark {
+		color: #450084;
+		border-color: #450084;
+	}
+
+		.btn-outline-dark:hover {
+			background-color: #450084;
+			color: white;
+			border-color: #450084;
+		}
+
+	.form-label {
+		font-weight: 600;
+		color: #450084;
+	}
+
+	.form-control, .form-select {
+		border-radius: 0.5rem;
+	}
+</style>
+
+<h2 class="mb-4 text-center">Add New Organization</h2>
+
+<div class="card p-4 shadow-sm border rounded" style="max-width: 600px; margin:0 auto;">
+	<form asp-page="AddOrg" method="post">
+		<div class="mb-3">
+			<label for="OrgName" class="form-label mt-2">Organization Name</label>
+			<input type="text" asp-for="NewOrg.OrgName" class="form-control" placeholder="Enter organization name..." />
+			<span asp-validation-for="NewOrg.OrgName" class="text-danger"></span>
+		</div>
+
+		<div class="mb-3">
+			<label for="Sector" class="form-label mt-2">Sector</label>
+			<input type="text" asp-for="NewOrg.Sector" class="form-control" placeholder="Enter sector..." />
+			<span asp-validation-for="NewOrg.Sector" class="text-danger"></span>
+		</div>
+
+		<div class="mb-3">
+			<label for="Status_Flag" class="form-label mt-2">Status</label>
+			<select asp-for="NewOrg.Status_Flag" class="form-control">
+				<option value="">All</option>
+				<option>Prospect</option>
+				<option>Initial Contact</option>
+				<option>Negotiation</option>
+				<option>MOU Signed</option>
+				<option>Active</option>
+				<option>On Hold</option>
+				<option>Inactive</option>
+			</select>
+			<span asp-validation-for="NewOrg.Status_Flag" class="text-danger"></span>
+		</div>
+
+		<button type="submit" class="btn btn-outline-primary">Add Org</button>
+		<a asp-page="/SponsorOrg/Index" class="btn btn-outline-dark">Cancel</a>
+	</form>
+</div>

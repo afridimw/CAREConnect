@@ -1,0 +1,104 @@
+﻿@page
+@model Lab2.Pages.Project.AddProjectNoteModel
+@{
+	ViewData["Title"] = "Add Project Note";
+}
+
+<style>
+	.table-responsive {
+		overflow-x: auto;
+	}
+
+	table thead th {
+		background-color: #450084;
+		color: white;
+		border: none;
+		padding: 0.75rem 1rem;
+		text-transform: uppercase;
+		letter-spacing: 0.5px;
+		font-size: 0.95rem;
+	}
+
+	table td {
+		padding: 0.75rem 1rem;
+		vertical-align: middle;
+		border-top: 1px solid #ddd;
+	}
+
+	table tbody tr:hover {
+		background-color: #f2e6ff;
+	}
+
+	.btn-outline-primary {
+		color: #450084;
+		border: 1.5px solid #450084;
+		border-radius: 0.5rem;
+		transition: all 0.2s ease-in-out;
+		font-weight: 500;
+	}
+
+		.btn-outline-primary:hover {
+			background-color: #450084;
+			color: white;
+			border-color: #450084;
+		}
+
+	.btn-outline-success {
+		color: #450084;
+		border-color: #450084;
+	}
+
+		.btn-outline-success:hover {
+			background-color: #450084;
+			color: white;
+			border-color: #450084;
+		}
+
+	.btn-outline-dark:hover {
+		background-color: #450084;
+		color: white;
+		border-color: #450084;
+	}
+
+	.btn-outline-dark {
+		color: #450084;
+		border-color: #450084;
+	}
+
+		.btn-outline-dark:hover {
+			background-color: #450084;
+			color: white;
+			border-color: #450084;
+		}
+</style>
+
+<h2 class="mt-4 mb-3">New Note</h2>
+
+<form method="post" asp-page="AddProjectNote">
+	<input type="hidden" asp-for="ProjectNote.ProjectNote_ID" />
+	<input type="hidden" asp-for="ProjectNote.Project_ID" />
+
+	<div class="mb-4">
+		<label class="form-label" asp-for="ProjectNote.Content">Note Content:</label>
+		<textarea asp-for="ProjectNote.Content" class="form-control" rows="3" placeholder="Enter your note..." required></textarea>
+	</div>
+
+	<div class="d-flex gap-2">
+		<button type="submit" class="btn btn-outline-primary">Add Project Note</button>
+		<a asp-page="/Project/ProjectDetails" asp-route-projectid="@Model.ProjectNote.Project_ID" class="btn btn-outline-dark">Cancel</a>
+	</div>
+</form>
+
+<div class="mt-5">
+	<h4 style="color: #450084;">Previous Notes</h4>
+	<ul class="list-unstyled">
+		@foreach (var note in Model.ProjectNotesList.OrderByDescending(n => n.Timestamp))
+		{
+			<li>
+				<small class="text-muted">@note.Timestamp?.ToString("g")</small><br />
+				<span>@note.Content</span>
+				<hr />
+			</li>
+		}
+	</ul>
+</div>

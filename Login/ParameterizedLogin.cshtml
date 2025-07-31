@@ -1,0 +1,236 @@
+﻿@page
+@model Lab2.Pages.Login.ParameterizedLoginModel
+@{
+	ViewData["Title"] = "Login";
+}
+
+<style>
+        body {
+            font-family: "Poppins";
+            background-color: #450084;
+        }
+
+        .nav-link {
+            color: #450084 !important;
+            background-color: white !important;
+        }
+
+        a {
+            color: mediumpurple;
+            text-decoration: none;
+            background-color: transparent;
+        }
+
+        .navbar .nav-link:hover {
+            color: purple !important;
+            text-decoration: none;
+            outline: 2px solid purple;
+            outline-offset: 4px;
+            border-radius: 4px;
+            transition: outline 0.2s ease-in-out;
+        }
+
+        .navbar-nav {
+            align-items: center;
+        }
+
+        .nav-item {
+            margin: 0.25rem 0.75rem;
+        }
+
+        footer {
+            background-color: #f8f9fa;
+            font-size: 0.85rem;
+            border-top: 1px solid #dee2e6;
+            color: #6c757d;
+        }
+
+        footer a {
+            color: mediumpurple;
+            text-decoration:none;
+        }
+
+        footer a:hover {
+            color: purple;
+            text-decoration: underline;
+        }
+
+        .nav-link {
+            color: #450084;
+            background-color: white !important;
+            margin: 20px;
+            padding-top: 30px;
+        }
+
+        #nav {
+            background-color: white;
+        }
+
+
+        a {
+            color: mediumpurple;
+            text-decoration: none;
+            background-color: transparent;
+        }
+
+        a:hover {
+            color: purple;
+            text-decoration: underline;
+        }
+
+        #myForm {
+            padding-top: 50px;
+            max-width: 400px;
+            border: 3px solid #f1f1f1;
+            background-color: white;
+            margin-top: 80px;
+            margin-left: 575px;
+            margin-bottom: 200px;
+            padding-bottom: 150px;
+            padding-right: 10px;
+            padding-left: 20px;
+            border-radius: 30px;
+            box-shadow: 5px 5px 5px grey;
+        }
+
+        .btn {
+            border-color: #450084;
+            padding: 0.5rem 1.25rem;
+            border-radius: 6px;
+            text-align: justify;
+            font-weight: 500;
+            background-color: #450084;
+            color: white;
+            transition: 0.2s ease-in-out;
+        }
+
+        .btn:hover {
+            background-color: white;
+            color: #450084;
+            border-color: #450084;
+        }
+
+        input {
+            border: none;
+            opacity: .5;
+            text-decoration: underline;
+        }
+
+        .fa {
+            font-size: 35px;
+            padding: 15px;
+        }
+
+        .social-icons {
+            font-size: 1.8rem;
+            margin-top: 1rem;
+            gap: 1rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        .social-icons a {
+            font: 1.8rem;
+            text-decoration: none;
+        }
+
+        .social-icons .fa-facebook {
+            color: #1877F2;
+        }
+
+        .social-icons .fa-google {
+            color: #EA4335;
+        }
+
+        .social-icons .fa-linkedin {
+            color: #0077B5;
+        }
+
+        .login-layout header,
+        .login-layout footer {
+            display: none;
+        }
+
+        .login-layout .container {
+            max-width: 500px;
+            margin: auto;
+            padding-top: 5rem;
+        }
+
+        .login-wrapper {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #450084;
+            overflow: hidden;
+        }
+
+        .login-card {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 2rem;
+            box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 420px;
+        }
+ </style>
+
+<div class="login-wrapper">
+	<div class="login-card">
+		<h1 class="text-center fw-bold mb-4 text-dark">Login</h1>
+        @if (ViewData["LoginMessage"] != null)
+        {
+            <div class="alert alert-success text-center">
+                @ViewData["LoginMessage"]
+            </div>
+        }
+
+        @if (ViewData["LoginError"] != null)
+        {
+            <div class="alert alert-danger text-center">
+                @ViewData["LoginError"]
+            </div>
+        }
+
+
+		@if (HttpContext.Session.GetString("Email") != null)
+		{
+			<p>@HttpContext.Session.GetString("Email") logged in as @HttpContext.Session.GetString("Role")</p>
+
+			<form method="post" asp-page-handler="LogoutHandler">
+				<input type="submit" class="btn btn-outline-danger" value="Logout">
+			</form>
+		}
+		else{
+			@if (HttpContext.Session.GetString("LoginError") != null)
+			{
+				<div class="alert alert-danger">
+					@HttpContext.Session.GetString("LoginError")
+				</div>
+			}
+
+		<form method="post">
+			<div asp-validation-summary="All" class="text-danger text-center"></div>
+
+			<div class="mb-3">
+				<label asp-for="Email" class="form-label"><strong>Email</strong></label>
+				<input asp-for="Email" class="form-control" placeholder="Enter Email" required />
+				<span asp-validation-for="Email" class="text-danger"></span>
+			</div>
+
+			<div class="mb-4">
+				<label asp-for="Password" class="form-label"><strong>Password</strong></label>
+				<input asp-for="Password" class="form-control" type="password" placeholder="Enter Password" required />
+				<span asp-validation-for="Password" class="text-danger"></span>
+			</div>
+
+			<button type ="submit" class="btn-outline-dark w-100">Login</button>
+		</form>
+		}
+	</div>
+</div>
+
+@section Scripts {
+	<partial name="_ValidationScriptsPartial" />
+}
